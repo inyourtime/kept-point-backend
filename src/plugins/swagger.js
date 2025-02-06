@@ -21,7 +21,12 @@ async function swaggerGenerator (fastify, opts) {
       servers: [
         {
           url: 'http://localhost:4499',
+          description: 'Local server',
         },
+        {
+          url: 'https://kept-point-backend.vercel.app',
+          description: 'Production server',
+        }
       ],
       components: {
         securitySchemes: {
