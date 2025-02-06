@@ -38,22 +38,19 @@ async function swaggerGenerator (fastify, opts) {
         },
       },
     },
-    exposeRoute: process.env.NODE_ENV !== 'production',
   })
 
-  if (process.env.NODE_ENV !== 'production') {
-    await fastify.register(ScalarApiReference, {
-      routePrefix: '/docs',
-      configuration: {
-        // theme: 'bluePlanet',
-        metaData: {
-          title: 'Kept Point API',
-        },
-        hideClientButton: true,
-        defaultOpenAllTags: true
+  await fastify.register(ScalarApiReference, {
+    routePrefix: '/docs',
+    configuration: {
+      // theme: 'bluePlanet',
+      metaData: {
+        title: 'Kept Point API',
       },
-    })
-  }
+      hideClientButton: true,
+      defaultOpenAllTags: true
+    },
+  })
 }
 
 export default fp(swaggerGenerator, {
