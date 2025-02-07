@@ -1,7 +1,8 @@
 {
   "name": "kept-point-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
+  "types": "src/server.d.ts",
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
@@ -21,7 +22,7 @@
     "@fastify/swagger": "^9.4.2",
     "@fastify/swagger-ui": "^5.2.1",
     "@prisma/client": "^6.3.1",
-    "@scalar/fastify-api-reference": "^1.25.115",
+    "@scalar/fastify-api-reference": "^1.25.72",
     "bcrypt": "^5.1.1",
     "fastify": "^5.2.1",
     "fastify-plugin": "^5.0.1",

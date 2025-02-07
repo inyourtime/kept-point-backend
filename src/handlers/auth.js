@@ -1,12 +1,11 @@
 import { prisma } from '../db/prisma.js'
-import { compareHash, createHash } from '../utils/hash.js'
 import { generateAccessToken } from '../utils/token.js'
 
 /** @type {import('fastify').RouteHandler} */
 export async function signup (request, reply) {
   const { email, password } = request.body
 
-  const hash = await createHash(password)
+  const hash = await this.bcrypt.createHash(password)
 
   try {
     const newUser = await prisma.user.create({
@@ -35,7 +34,7 @@ export async function login (request, reply) {
     throw reply.unauthorized('Email or password are incorrect')
   }
 
-  const match = await compareHash(password, user.password)
+  const match = await this.bcrypt.compareHash(password, user.password)
   if (!match) {
     throw reply.unauthorized('Email or password are incorrect')
   }

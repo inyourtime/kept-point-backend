@@ -4,7 +4,7 @@ import { prisma } from '../db/prisma.js'
 export async function getAll (request, reply) {
   const { page, limit } = request.query
 
-  const products = await prisma.product.findMany({
+  const rewards = await prisma.reward.findMany({
     select: {
       id: true,
       name: true,
@@ -13,6 +13,11 @@ export async function getAll (request, reply) {
       endDate: true,
       image: true,
       description: true,
+      rewardType: {
+        select: {
+          name: true
+        }
+      }
     },
     where: { startDate: { lte: new Date() } },
     skip: (page - 1) * limit,
@@ -20,7 +25,7 @@ export async function getAll (request, reply) {
     orderBy: [{ createdAt: 'desc' }, { name: 'asc' }],
   })
 
-  return products
+  return rewards
 }
 
 /** @type {import('fastify').RouteHandler} */
@@ -28,7 +33,7 @@ export async function getOne (request, reply) {
   const { id: userId } = request.user
   const { id } = request.params
 
-  const product = await prisma.product.findUnique({
+  const reward = await prisma.reward.findUnique({
     where: { id },
     select: {
       id: true,
@@ -39,39 +44,44 @@ export async function getOne (request, reply) {
       image: true,
       description: true,
       conditions: true,
-      UserProduct: {
+      rewardType: {
+        select: {
+          name: true
+        }
+      },
+      UserReward: {
         where: { userId },
         select: {
           id: true
         }
-      }
+      },
     },
   })
-  if (!product) {
-    throw reply.notFound('Product not found')
+  if (!reward) {
+    throw reply.notFound('Reward not found')
   }
 
-  const { UserProduct, ...rest } = product
+  const { UserReward, ...rest } = reward
 
   return {
     ...rest,
-    isPurchased: UserProduct.length > 0
+    isExchanged: UserReward.length > 0
   }
 }
 
 /** @type {import('fastify').RouteHandler} */
 export async function exchange (request, reply) {
   const { id: userId } = request.user
-  const { productId } = request.body
+  const { rewardId } = request.body
 
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
+  const reward = await prisma.reward.findUnique({
+    where: { id: rewardId },
     select: {
       id: true,
       point: true,
       startDate: true,
       endDate: true,
-      UserProduct: {
+      UserReward: {
         where: { userId },
         select: {
           id: true
@@ -79,21 +89,21 @@ export async function exchange (request, reply) {
       }
     }
   })
-  if (!product) {
-    throw reply.notFound('Product not found')
+  if (!reward) {
+    throw reply.notFound('Reward not found')
   }
 
-  // check if the user has already purchased the product
-  if (product.UserProduct.length > 0) {
-    throw reply.badRequest('You already purchased this product')
+  // check if the user has already exchanged the reward
+  if (reward.UserReward.length > 0) {
+    throw reply.badRequest('You already exchanged this reward')
   }
 
   // check start date and end date
-  if (product.startDate.getTime() > new Date().getTime()) {
-    throw reply.badRequest('Product is not available yet')
+  if (reward.startDate.getTime() > new Date().getTime()) {
+    throw reply.badRequest('Reward is not available yet')
   }
-  if (product.endDate.getTime() < new Date().getTime()) {
-    throw reply.badRequest('Product is not available anymore')
+  if (reward.endDate.getTime() < new Date().getTime()) {
+    throw reply.badRequest('Reward is not available anymore')
   }
 
   // check if the user has enough points
@@ -103,7 +113,7 @@ export async function exchange (request, reply) {
       point: true
     }
   })
-  if (user.point < product.point) {
+  if (user.point < reward.point) {
     throw reply.badRequest('You do not have enough points')
   }
 
@@ -111,13 +121,13 @@ export async function exchange (request, reply) {
     prisma.user.update({
       where: { id: userId },
       data: {
-        point: user.point - product.point
+        point: user.point - reward.point
       }
     }),
-    prisma.userProduct.create({
+    prisma.userReward.create({
       data: {
         userId,
-        productId
+        rewardId
       }
     })
   ])

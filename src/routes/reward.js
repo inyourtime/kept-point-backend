@@ -1,5 +1,4 @@
-import * as productHandler from '../handlers/product.js'
-import { errorSchema } from '../schemas/index.js'
+import * as rewardHandler from '../handlers/reward.js'
 
 /** @type {import('fastify').FastifyPluginAsync} */
 export default async function routes (app, opts) {
@@ -7,9 +6,9 @@ export default async function routes (app, opts) {
     method: 'GET',
     url: '/',
     schema: {
-      tags: ['Product'],
-      summary: 'Get all products',
-      description: 'Get all products',
+      tags: ['Reward'],
+      summary: 'Get all rewards',
+      description: 'Get all rewards',
       security: [app.bearerAuth],
       querystring: {
         type: 'object',
@@ -19,22 +18,23 @@ export default async function routes (app, opts) {
         },
       },
       response: {
-        ...errorSchema,
+        ...app.errorSchema,
       },
     },
     config: {
       auth: true,
     },
-    handler: productHandler.getAll,
+    handler: rewardHandler.getAll,
   })
 
   app.route({
     method: 'GET',
     url: '/:id',
     schema: {
-      tags: ['Product'],
-      summary: 'Get product by id',
-      description: 'Get product by id',
+      tags: ['Reward'],
+      summary: 'Get reward by id',
+      description: 'Get reward by id',
+      security: [app.bearerAuth],
       params: {
         type: 'object',
         properties: {
@@ -46,41 +46,41 @@ export default async function routes (app, opts) {
         },
       },
       response: {
-        ...errorSchema,
+        ...app.errorSchema,
       },
     },
     config: {
       auth: true,
     },
-    handler: productHandler.getOne,
+    handler: rewardHandler.getOne,
   })
 
   app.route({
     method: 'POST',
     url: '/exchange',
     schema: {
-      tags: ['Product'],
-      summary: 'Exchange product',
-      description: 'Exchange product',
+      tags: ['Reward'],
+      summary: 'Exchange reward',
+      description: 'Exchange reward',
       security: [app.bearerAuth],
       body: {
         type: 'object',
         properties: {
-          productId: {
+          rewardId: {
             type: 'string',
             format: 'uuid',
             examples: ['11111111-1111-1111-1111-111111111111']
           },
         },
-        required: ['productId'],
+        required: ['rewardId'],
       },
       response: {
-        ...errorSchema,
+        ...app.errorSchema,
       },
     },
     config: {
       auth: true,
     },
-    handler: productHandler.exchange,
+    handler: rewardHandler.exchange,
   })
 }

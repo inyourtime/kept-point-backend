@@ -3,8 +3,7 @@ import fp from 'fastify-plugin'
 import FastifyCors from '@fastify/cors'
 import FastifySensible from '@fastify/sensible'
 
-import authentication from './plugins/authentication.js'
-import swagger from './plugins/swagger.js'
+import { errorSchema } from './schemas/index.js'
 
 function buildServer () {
   const app = Fastify({ logger: false })
@@ -14,8 +13,9 @@ function buildServer () {
   })
   app.register(FastifySensible, { sharedSchemaId: 'HttpError' })
 
-  app.register(swagger)
-  app.register(authentication)
+  app.register(import('./plugins/swagger.js'))
+  app.register(import('./plugins/authentication.js'))
+  app.register(import('./plugins/bcrypt.js'))
   app.register(fp(decorateFastifyInstance))
 
   app.get('/', () => ({ name: 'Kept Point API' }))
@@ -32,7 +32,7 @@ function buildServer () {
 function createRoutes (app) {
   app.register(import('./routes/auth.js'), { prefix: '/auth' })
   app.register(import('./routes/user.js'), { prefix: '/user' })
-  app.register(import('./routes/product.js'), { prefix: '/products' })
+  app.register(import('./routes/reward.js'), { prefix: '/rewards' })
 }
 
 /**
@@ -40,6 +40,7 @@ function createRoutes (app) {
  */
 function decorateFastifyInstance (app) {
   app.decorate('bearerAuth', { bearerAuth: [] })
+  app.decorate('errorSchema', errorSchema)
 }
 
 export default buildServer

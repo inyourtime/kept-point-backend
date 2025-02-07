@@ -1,5 +1,4 @@
 import * as authHandler from '../handlers/auth.js'
-import { errorSchema } from '../schemas/index.js'
 
 /** @type {import('fastify').FastifyPluginAsync} */
 export default async function routes (app, opts) {
@@ -26,7 +25,7 @@ export default async function routes (app, opts) {
             email: { type: 'string', format: 'email' },
           },
         },
-        ...errorSchema,
+        ...app.errorSchema,
       },
     },
     config: {
@@ -57,7 +56,7 @@ export default async function routes (app, opts) {
             accessToken: { type: 'string' },
           },
         },
-        ...errorSchema,
+        ...app.errorSchema,
       },
     },
     config: {
@@ -83,7 +82,7 @@ export default async function routes (app, opts) {
             name: { type: 'string', nullable: true },
           },
         },
-        ...errorSchema,
+        ...app.errorSchema,
       },
     },
     config: {

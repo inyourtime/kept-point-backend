@@ -1,5 +1,4 @@
 import * as userHandler from '../handlers/user.js'
-import { errorSchema } from '../schemas/index.js'
 
 /** @type {import('fastify').FastifyPluginAsync} */
 export default async function routes (app, opts) {
@@ -28,7 +27,7 @@ export default async function routes (app, opts) {
             }
           },
         },
-        ...errorSchema,
+        ...app.errorSchema,
       },
     },
     config: {
@@ -58,7 +57,7 @@ export default async function routes (app, opts) {
             status: { type: 'string' },
           },
         },
-        ...errorSchema,
+        ...app.errorSchema,
       },
     },
     config: {

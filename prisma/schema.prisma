@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  id          String        @id @default(uuid())
-  email       String        @unique
-  name        String?
-  password    String
-  point       Int           @default(0)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  profile     Profile?
-  UserProduct UserProduct[]
+  id         String       @id @default(uuid())
+  email      String       @unique
+  name       String?
+  password   String
+  point      Int          @default(0)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  profile    Profile?
+  UserReward UserReward[]
 }
 
 model Profile {
@@ -26,28 +26,36 @@ model Profile {
   userId String @unique
 }
 
-model Product {
-  id          String        @id @default(uuid())
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  name        String
-  point       Int
-  startDate   DateTime
-  endDate     DateTime
-  image       String
-  description String?
-  conditions  String?
-  UserProduct UserProduct[]
+model Reward {
+  id           String       @id @default(uuid())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  name         String
+  point        Int
+  startDate    DateTime
+  endDate      DateTime
+  image        String
+  description  String?
+  conditions   String?
+  rewardTypeId String
+  rewardType   RewardType   @relation(fields: [rewardTypeId], references: [id])
+  UserReward   UserReward[]
 }
 
-model UserProduct {
+model RewardType {
+  id      String   @id @default(uuid())
+  name    String
+  rewards Reward[]
+}
+
+model UserReward {
   id        String   @id @default(uuid())
   userId    String
-  productId String
-  createdAt DateTime @default(now()) // Timestamp when the record is created
+  rewardId  String
+  createdAt DateTime @default(now())
 
-  user    User    @relation(fields: [userId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  reward Reward @relation(fields: [rewardId], references: [id])
 
-  @@unique([userId, productId]) // To enforce the uniqueness of user-product pairs
+  @@unique([userId, rewardId])
 }

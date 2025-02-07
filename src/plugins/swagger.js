@@ -2,8 +2,8 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import fp from 'fastify-plugin'
 import Swagger from '@fastify/swagger'
-import SwaggerUi from '@fastify/swagger-ui'
-// import ScalarApiReference from '@scalar/fastify-api-reference'
+// import SwaggerUi from '@fastify/swagger-ui'
+import ScalarApiReference from '@scalar/fastify-api-reference'
 
 const { version } = JSON.parse(
   readFileSync(
@@ -41,21 +41,21 @@ async function swaggerGenerator (fastify, opts) {
     },
   })
 
-  await fastify.register(SwaggerUi, {
-    routePrefix: '/docs',
-  })
-
-  // await fastify.register(ScalarApiReference, {
+  // await fastify.register(SwaggerUi, {
   //   routePrefix: '/docs',
-  //   configuration: {
-  //     // theme: 'bluePlanet',
-  //     metaData: {
-  //       title: 'Kept Point API',
-  //     },
-  //     hideClientButton: true,
-  //     defaultOpenAllTags: true
-  //   },
   // })
+
+  await fastify.register(ScalarApiReference, {
+    routePrefix: '/docs',
+    configuration: {
+      // theme: 'bluePlanet',
+      metaData: {
+        title: 'Kept Point API',
+      },
+      hideClientButton: true,
+      defaultOpenAllTags: true
+    },
+  })
 }
 
 export default fp(swaggerGenerator, {
