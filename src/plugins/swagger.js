@@ -2,8 +2,7 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import fp from 'fastify-plugin'
 import Swagger from '@fastify/swagger'
-// import SwaggerUi from '@fastify/swagger-ui'
-import ScalarApiReference from '@scalar/fastify-api-reference'
+import Scalar from './scalar/scalar.js'
 
 const { version } = JSON.parse(
   readFileSync(
@@ -27,7 +26,7 @@ async function swaggerGenerator (fastify, opts) {
         {
           url: 'https://kept-point-backend.vercel.app',
           description: 'Production server',
-        }
+        },
       ],
       components: {
         securitySchemes: {
@@ -41,19 +40,14 @@ async function swaggerGenerator (fastify, opts) {
     },
   })
 
-  // await fastify.register(SwaggerUi, {
-  //   routePrefix: '/docs',
-  // })
-
-  await fastify.register(ScalarApiReference, {
-    routePrefix: '/docs',
-    configuration: {
-      // theme: 'bluePlanet',
+  await fastify.register(Scalar, {
+    prefix: '/docs',
+    scalarConfig: {
       metaData: {
         title: 'Kept Point API',
       },
       hideClientButton: true,
-      defaultOpenAllTags: true
+      defaultOpenAllTags: true,
     },
   })
 }
