@@ -56,6 +56,24 @@ export default async function routes (app, opts) {
   })
 
   app.route({
+    method: 'GET',
+    url: '/types',
+    schema: {
+      tags: ['Reward'],
+      summary: 'Get reward types',
+      description: 'Get reward types',
+      security: [app.bearerAuth],
+      response: {
+        ...app.errorSchema,
+      },
+    },
+    config: {
+      auth: true,
+    },
+    handler: rewardHandler.getRewardTypes,
+  })
+
+  app.route({
     method: 'POST',
     url: '/exchange',
     schema: {

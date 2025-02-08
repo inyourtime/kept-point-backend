@@ -15,6 +15,7 @@ export async function getAll (request, reply) {
       description: true,
       rewardType: {
         select: {
+          id: true,
           name: true
         }
       }
@@ -46,6 +47,7 @@ export async function getOne (request, reply) {
       conditions: true,
       rewardType: {
         select: {
+          id: true,
           name: true
         }
       },
@@ -67,6 +69,18 @@ export async function getOne (request, reply) {
     ...rest,
     isExchanged: UserReward.length > 0
   }
+}
+
+/** @type {import('fastify').RouteHandler} */
+export async function getRewardTypes (request, reply) {
+  const rewardTypes = await prisma.rewardType.findMany({
+    select: {
+      id: true,
+      name: true,
+    }
+  })
+
+  return rewardTypes
 }
 
 /** @type {import('fastify').RouteHandler} */
