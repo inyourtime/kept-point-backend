@@ -11,6 +11,21 @@ const { version } = JSON.parse(
 )
 
 async function swaggerGenerator (fastify, opts) {
+  const servers = {
+    local: {
+      url: 'http://localhost:4499',
+      description: 'Local server',
+    },
+    production: {
+      url: 'https://kept-point-backend.vercel.app',
+      description: 'Production server',
+    },
+  }
+
+  const server = process.env.NODE_ENV === 'production'
+    ? servers['production']
+    : servers['local']
+
   await fastify.register(Swagger, {
     openapi: {
       info: {
@@ -18,16 +33,7 @@ async function swaggerGenerator (fastify, opts) {
         description: 'API documentation for Kept Point',
         version,
       },
-      servers: [
-        {
-          url: 'http://localhost:4499',
-          description: 'Local server',
-        },
-        {
-          url: 'https://kept-point-backend.vercel.app',
-          description: 'Production server',
-        },
-      ],
+      servers: [server],
       components: {
         securitySchemes: {
           bearerAuth: {
@@ -46,6 +52,7 @@ async function swaggerGenerator (fastify, opts) {
       metaData: {
         title: 'Kept Point API',
       },
+      theme: 'fastify',
       hideClientButton: true,
       defaultOpenAllTags: true,
     },

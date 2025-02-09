@@ -24,7 +24,7 @@ async function main () {
 
   const rewardTypes = await prisma.rewardType.findMany()
 
-  const rewards = Array.from({ length: 17 }).map((_, i) => ({
+  const rewards = Array.from({ length: images.length }).map((_, i) => ({
     name: faker.commerce.productName(),
     point: faker.number.int({ min: 10, max: 1000, multipleOf: 10 }),
     startDate: faker.date.past(),

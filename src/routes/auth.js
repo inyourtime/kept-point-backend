@@ -27,6 +27,7 @@ export default async function routes (app, opts) {
         },
         ...app.errorSchema,
       },
+      hide: true
     },
     config: {
       auth: false,
@@ -56,7 +57,8 @@ export default async function routes (app, opts) {
             accessToken: { type: 'string' },
           },
         },
-        ...app.errorSchema,
+        400: app.errorSchema[400],
+        401: app.errorSchema[401],
       },
     },
     config: {
@@ -82,7 +84,7 @@ export default async function routes (app, opts) {
             name: { type: 'string', nullable: true },
           },
         },
-        ...app.errorSchema,
+        401: app.errorSchema[401],
       },
     },
     config: {

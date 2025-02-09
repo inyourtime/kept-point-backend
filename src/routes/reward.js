@@ -18,7 +18,30 @@ export default async function routes (app, opts) {
         },
       },
       response: {
-        ...app.errorSchema,
+        200: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string', format: 'uuid' },
+              name: { type: 'string' },
+              point: { type: 'number' },
+              startDate: { type: 'string', format: 'date-time' },
+              endDate: { type: 'string', format: 'date-time' },
+              image: { type: 'string' },
+              description: { type: 'string', nullable: true },
+              rewardType: {
+                type: 'object',
+                properties: {
+                  id: { type: 'string', format: 'uuid' },
+                  name: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        400: app.errorSchema[400],
+        401: app.errorSchema[401],
       },
     },
     config: {
@@ -46,7 +69,30 @@ export default async function routes (app, opts) {
         },
       },
       response: {
-        ...app.errorSchema,
+        200: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+            point: { type: 'number' },
+            startDate: { type: 'string', format: 'date-time' },
+            endDate: { type: 'string', format: 'date-time' },
+            image: { type: 'string' },
+            description: { type: 'string', nullable: true },
+            conditions: { type: 'string', nullable: true },
+            rewardType: {
+              type: 'object',
+              properties: {
+                id: { type: 'string', format: 'uuid' },
+                name: { type: 'string' },
+              },
+            },
+            isExchanged: { type: 'boolean' },
+          },
+        },
+        400: app.errorSchema[400],
+        401: app.errorSchema[401],
+        404: app.errorSchema[404],
       },
     },
     config: {
@@ -64,7 +110,17 @@ export default async function routes (app, opts) {
       description: 'Get reward types',
       security: [app.bearerAuth],
       response: {
-        ...app.errorSchema,
+        200: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string', format: 'uuid' },
+              name: { type: 'string' },
+            },
+          },
+        },
+        401: app.errorSchema[401],
       },
     },
     config: {
@@ -93,7 +149,16 @@ export default async function routes (app, opts) {
         required: ['rewardId'],
       },
       response: {
-        ...app.errorSchema,
+        200: {
+          type: 'object',
+          properties: {
+            status: { type: 'string' },
+            point: { type: 'number' },
+          },
+        },
+        400: app.errorSchema[400],
+        401: app.errorSchema[401],
+        404: app.errorSchema[404],
       },
     },
     config: {
